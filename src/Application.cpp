@@ -20,6 +20,9 @@ bool Application::is_window_open()
 
 bool Application::Update()
 {
+    float delta_time = (this->m_clock.getElapsedTime()-this->m_elapsed).asSeconds();
+    this->m_elapsed = this->m_clock.getElapsedTime();
+
     sf::Event event;
     bool out(false);
 
@@ -37,9 +40,17 @@ bool Application::Update()
         }
     }
 
-    this->m_buddy_pos = lerp_BIG_PATH(this->m_big_path, this->m_clock.getElapsedTime().asSeconds());
+    this->handle_keyboard(delta_time);
+
+    this->m_buddy_pos = lerp_BIG_PATH(this->m_big_path, this->m_buddy_dist);
 
     return out;
+}
+
+void Application::handle_keyboard(float dt)
+{
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) this->m_buddy_dist -= dt;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) this->m_buddy_dist += dt;    
 }
 
 void Application::Draw()
